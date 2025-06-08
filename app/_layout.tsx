@@ -7,6 +7,8 @@ import 'react-native-reanimated';
 
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { colors } from '@/styles/theme';
+import { Provider } from 'react-redux';
+import { store } from '../src/state/store';
 
 // Create a custom theme context
 const ThemeContext = createContext({
@@ -42,14 +44,16 @@ export default function RootLayout() {
   }
 
   return (
-    <ThemeProvider>
-      <NavigationThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-        <Stack>
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-          <Stack.Screen name="+not-found" />
-        </Stack>
-        <StatusBar style={colorScheme === 'dark' ? 'light' : 'dark'} />
-      </NavigationThemeProvider>
-    </ThemeProvider>
+    <Provider store={store}>
+      <ThemeProvider>
+        <NavigationThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+          <Stack>
+            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+            <Stack.Screen name="+not-found" />
+          </Stack>
+          <StatusBar style={colorScheme === 'dark' ? 'light' : 'dark'} />
+        </NavigationThemeProvider>
+      </ThemeProvider>
+    </Provider>
   );
 }

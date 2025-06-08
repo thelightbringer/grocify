@@ -7,6 +7,17 @@ export interface GroceryItem {
   price: number;
   isChecked: boolean;
   notes?: string;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ArchivedList {
+  id: string;
+  timestamp: string;
+  items: GroceryItem[];
+}
+
+export interface GroceryState {
+  items: GroceryItem[];
+  archived: ArchivedList[];
 }
