@@ -72,6 +72,7 @@ export const createStyles = (isDark: boolean) => {
     container: {
       flex: 1,
       backgroundColor: themeColors.background,
+      position: 'relative',
     },
     row: {
       flexDirection: 'row',
@@ -100,6 +101,16 @@ export const createStyles = (isDark: boolean) => {
       color: themeColors.text,
       backgroundColor: themeColors.background,
     },
+    multilineInput: {
+      borderWidth: 1,
+      borderColor: themeColors.border,
+      borderRadius: 8,
+      padding: spacing.sm,
+      fontSize: 16,
+      color: themeColors.text,
+      backgroundColor: themeColors.background,
+      minHeight: 120,
+    },
     button: {
       backgroundColor: themeColors.primary,
       padding: spacing.md,
@@ -111,6 +122,81 @@ export const createStyles = (isDark: boolean) => {
       color: themeColors.background,
       fontSize: 16,
       fontWeight: '600',
+    },
+    modalContainer: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    },
+    modalContent: {
+      width: '90%',
+      padding: 20,
+      borderRadius: 12,
+      shadowColor: '#000',
+      shadowOffset: {
+        width: 0,
+        height: 2,
+      },
+      shadowOpacity: 0.25,
+      shadowRadius: 4,
+      elevation: 5,
+    },
+    modalTitle: {
+      fontSize: 20,
+      fontWeight: 'bold',
+      marginBottom: 8,
+      textAlign: 'center',
+    },
+    modalSubtitle: {
+      fontSize: 14,
+      marginBottom: 16,
+      textAlign: 'center',
+    },
+    buttonContainer: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      gap: 10,
+    },
+    cancelButton: {
+      flex: 1,
+      backgroundColor: '#E5E5EA',
+      padding: 12,
+      borderRadius: 8,
+      alignItems: 'center',
+    },
+    addButton: {
+      flex: 1,
+      backgroundColor: themeColors.success,
+      padding: 12,
+      borderRadius: 8,
+      alignItems: 'center',
+    },
+    disabledButton: {
+      opacity: 0.5,
+    },
+    removeButton: {
+      padding: 8,
+    },
+    fab: {
+      position: 'absolute',
+      right: 20,
+      width: 60,
+      height: 60,
+      borderRadius: 30,
+      backgroundColor: themeColors.success,
+      justifyContent: 'center',
+      alignItems: 'center',
+      elevation: 4, // Android shadow
+      shadowColor: '#000', // iOS shadow
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.25,
+      shadowRadius: 4,
+    },
+    emptyText: {
+      textAlign: 'center',
+      fontSize: 16,
+      marginTop: 20,
     },
   });
 }; 
