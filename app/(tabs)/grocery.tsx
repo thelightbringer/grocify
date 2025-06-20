@@ -256,7 +256,7 @@ export default function GroceryScreen() {
           keyExtractor={item => item.id}
           contentContainerStyle={{ padding: 16 }}
           ListEmptyComponent={
-            <Text style={styles.emptyText}>No grocery items yet. Add some!</Text>
+            <Text style={styles.emptyText}>No items yet. Add some!</Text>
           }
         />
         <Pressable
