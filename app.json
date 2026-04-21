@@ -10,8 +10,7 @@
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.abhijitmisra.grocify",
-      "jsEngine": "jsc"
+      "bundleIdentifier": "com.abhijitmisra.grocify"
     },
     "android": {
       "adaptiveIcon": {

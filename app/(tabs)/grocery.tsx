@@ -9,6 +9,7 @@ import {
     addItems,
     archivePurchasedItems,
     clearItems,
+    removeArchive,
     removeItem,
     toggleItem,
 } from '../../src/state/grocerySlice';
@@ -18,7 +19,6 @@ import { GroceryItem } from '../../types/grocery';
 
 export default function GroceryScreen() {
   const items = useSelector((state: RootState) => state.grocery.items);
-  const archived = useSelector((state: RootState) => state.grocery.archived);
   const dispatch = useDispatch<AppDispatch>();
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [showToast, setShowToast] = useState(false);
@@ -152,24 +152,20 @@ export default function GroceryScreen() {
 
   function doArchiveChecked(checkedItems: GroceryItem[]) {
     if (!checkedItems.length) return;
-    dispatch(archivePurchasedItems());
-    setTimeout(() => {
-      const latestArchive = archived[0];
-      if (latestArchive && latestArchive.items.length === checkedItems.length) {
-        showSnackbar({
-          type: 'archive',
-          count: checkedItems.length,
-          archiveId: latestArchive.id,
-          items: checkedItems,
-        });
-      }
-    }, 50);
+    const archiveId = Date.now().toString() + Math.random().toString(36).substr(2, 9);
+    dispatch(archivePurchasedItems(archiveId));
+    showSnackbar({
+      type: 'archive',
+      count: checkedItems.length,
+      archiveId,
+      items: checkedItems,
+    });
   }
 
   function handleUndoSnackbar() {
     if (!snackbar) return;
     if (snackbar.type === 'archive' && snackbar.archiveId && snackbar.items.length) {
-      dispatch({ type: 'grocery/removeArchive', payload: snackbar.archiveId });
+      dispatch(removeArchive(snackbar.archiveId));
       dispatch(addItems(snackbar.items.map(i => i.name)));
       hideSnackbar();
       if (snackbarTimeout.current) clearTimeout(snackbarTimeout.current);

@@ -43,16 +43,19 @@ const grocerySlice = createSlice({
         i.updatedAt = now;
       });
     },
-    archivePurchasedItems: (state: GroceryState) => {
+    archivePurchasedItems: (state: GroceryState, action: PayloadAction<string>) => {
       const purchased = state.items.filter((i: GroceryItem) => i.isChecked);
       if (purchased.length === 0) return;
       const archive: ArchivedList = {
-        id: Date.now().toString() + Math.random().toString(36).substr(2, 9),
+        id: action.payload,
         timestamp: new Date().toISOString(),
         items: purchased,
       };
       state.archived.unshift(archive);
       state.items = state.items.filter((i: GroceryItem) => !i.isChecked);
+    },
+    removeArchive: (state: GroceryState, action: PayloadAction<string>) => {
+      state.archived = state.archived.filter((a: ArchivedList) => a.id !== action.payload);
     },
     clearItems: (state: GroceryState) => {
       state.items = [];
@@ -66,6 +69,7 @@ export const {
   removeItem,
   markAllPurchased,
   archivePurchasedItems,
+  removeArchive,
   clearItems,
 } = grocerySlice.actions;
 
