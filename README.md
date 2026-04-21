@@ -1,50 +1,135 @@
-# Welcome to your Expo app 👋
+# Grocify
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+A mobile grocery list manager built with React Native and Expo. Add items, check them off as you shop, archive completed lists, and configure your preferred store — all with dark mode support.
 
-## Get started
+## Features
 
-1. Install dependencies
+- **Grocery list** — add multiple items at once (one per line), check items off, remove individual items, or clear the whole list
+- **Archive** — archive all checked items as a completed shopping run; undo within 5 seconds if you change your mind
+- **Receipts tab** — view past archived lists (in progress)
+- **Store preference** — choose a preferred store (Tesco, Lidl, Aldi) saved locally with AsyncStorage
+- **Dark mode** — full light/dark theme support that follows the system setting
+- **Haptic feedback** — subtle tap feedback on tab bar buttons (iOS)
 
-   ```bash
-   npm install
-   ```
+## Tech stack
 
-2. Start the app
+| Layer | Library |
+|---|---|
+| Framework | [Expo](https://expo.dev) ~53 / React Native 0.79 |
+| Routing | [Expo Router](https://expo.github.io/router) v5 (file-based) |
+| State | [Redux Toolkit](https://redux-toolkit.js.org) + React Redux |
+| Storage | [@react-native-async-storage/async-storage](https://github.com/react-native-async-storage/async-storage) |
+| Icons | [@expo/vector-icons](https://docs.expo.dev/guides/icons/) (Ionicons) |
+| Animation | React Native `Animated` API |
+| Language | TypeScript (strict) |
 
-   ```bash
-   npx expo start
-   ```
+## Project structure
 
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
-
-```bash
-npm run reset-project
+```
+grocify/
+├── app/
+│   ├── _layout.tsx          # Root layout: Redux provider, theme context, nav
+│   ├── index.tsx            # Redirect → /(tabs)/grocery
+│   └── (tabs)/
+│       ├── _layout.tsx      # Bottom tab navigator
+│       ├── grocery.tsx      # Main grocery list screen
+│       ├── receipts.tsx     # Archived lists screen
+│       └── settings.tsx     # Store preference screen
+├── components/
+│   ├── AddItemModal.tsx     # Modal for adding items
+│   ├── HapticTab.tsx        # Tab bar button with haptic feedback
+│   └── ui/
+│       ├── IconSymbol.ios.tsx       # SF Symbols wrapper (iOS)
+│       ├── IconSymbol.tsx           # Ionicons fallback (other platforms)
+│       ├── TabBarBackground.ios.tsx # Blur tab bar (iOS)
+│       └── TabBarBackground.tsx    # Default tab bar background
+├── src/state/
+│   ├── store.ts             # Redux store
+│   └── grocerySlice.ts      # Grocery state: items + archived lists
+├── types/
+│   └── grocery.ts           # TypeScript interfaces
+├── styles/
+│   └── theme.ts             # Color palette + createStyles factory
+├── hooks/
+│   ├── useColorScheme.ts    # Re-export from react-native
+│   └── useThemeColor.ts     # Theme-aware color helper
+└── assets/
+    ├── fonts/               # SpaceMono
+    └── images/              # App icon, splash, adaptive icon
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+## Getting started
 
-## Learn more
+### Prerequisites
 
-To learn more about developing your project with Expo, look at the following resources:
+- Node.js 18+
+- [Expo CLI](https://docs.expo.dev/get-started/installation/): `npm install -g expo-cli`
+- For iOS: Xcode 15+ and CocoaPods (`gem install cocoapods`)
+- For Android: Android Studio with an emulator configured
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+### Install dependencies
 
-## Join the community
+```bash
+npm install
+```
 
-Join our community of developers creating universal apps.
+### Run in Expo Go (quickest start)
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+```bash
+npx expo start
+```
+
+Scan the QR code with the Expo Go app (iOS / Android) or press `i` for the iOS simulator, `a` for Android.
+
+### Run a native development build
+
+Use this when you need access to native modules (the default for this project since it uses `expo-dev-client`).
+
+**iOS**
+
+```bash
+# Install CocoaPods dependencies (first time or after native changes)
+cd ios && pod install && cd ..
+
+npx expo run:ios
+```
+
+**Android**
+
+```bash
+npx expo run:android
+```
+
+**Web**
+
+```bash
+npx expo start --web
+```
+
+## State management
+
+Redux Toolkit manages all grocery state in a single slice (`src/state/grocerySlice.ts`).
+
+| Action | Description |
+|---|---|
+| `addItems(names: string[])` | Add one or more items to the list |
+| `toggleItem(id)` | Toggle the checked state of an item |
+| `removeItem(id)` | Remove a single item |
+| `markAllPurchased()` | Check every item |
+| `archivePurchasedItems(archiveId)` | Move all checked items into an archived list |
+| `removeArchive(archiveId)` | Remove an archived list (used by undo) |
+| `clearItems()` | Remove all items from the active list |
+
+Store preference (selected store) is persisted directly with AsyncStorage outside of Redux, keyed as `storePreference`.
+
+## Configuration
+
+`app.json` controls the Expo build configuration. Key settings:
+
+| Key | Value | Notes |
+|---|---|---|
+| `newArchEnabled` | `true` | React Native New Architecture enabled |
+| `ios.bundleIdentifier` | `com.abhijitmisra.grocify` | Change for your own distribution |
+| `scheme` | `grocify` | Deep-link URL scheme |
+
+The iOS native build reads its JS engine setting from `ios/Podfile.properties.json` (`expo.jsEngine: "hermes"`). Hermes is required when New Architecture is enabled.
